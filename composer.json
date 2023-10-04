@@ -1,0 +1,11 @@
+{
+    "require": {
+        "mongodb/mongodb": "^1.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Traker\\": "src/",
+            "Device\\": "src/"
+        }
+    }
+}
