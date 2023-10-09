@@ -1,23 +1,60 @@
 <?php
 namespace Device;
 
+use MongoDB\Client;
+
 class Tk103
 {
 
-    public $data = "imei:864895031874322,ac alarm,231002124957,,F,114957.00,A,3023.58598,N,00931.35082,W,;";
 
-    public function getData()
+    public function connectDB()
     {
-        $values = explode(',', $this->data);
-        $object = [
-            'imei' => explode(':', $values[0])[1],
-            'status' => $values[1],
-            'timestamp' => $values[2],
-            'speed' => $values[5],
-            'latitude' => $values[7],
-            'longitude' => $values[9],
-        ];
+        $mongoClient = new Client('mongodb://localhost:27017');
+        // Select the database
+        $db = $mongoClient->selectDatabase('trackerDB');
+        return $db;
+    }
 
-        return $object;
+    public function getIdDevice($imei)
+    {
+        $db = $this->connectDB();
+        $check = $this->checkDevice($imei, $db);
+        if (!is_null($check)) {
+            $id = $check;
+            return $id;
+        } else {
+            $device = [
+                "imei" => $imei,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ];
+            $id = $this->insertDevice($device, $db);
+            return $id;
+        }
+    }
+
+    public function checkDevice($imei, $db)
+    {
+        // Select a collection
+        $collection = $db->selectCollection("device");
+        $query = ["imei" => $imei];
+        $document = $collection->findOne($query);
+        if (isset($document)) {
+            $id = $document['_id'];
+            return $id;
+        } else {
+            return null;
+        }
+    }
+    public function insertDevice($device, $db)
+    {
+        $collection = $db->selectCollection("device");
+        $result = $collection->insertOne($device);
+        if ($result->getInsertedCount() === 1) {
+            $id = $result->getInsertedId();
+            return $id;
+        } else {
+            return null;
+        }
     }
 }
