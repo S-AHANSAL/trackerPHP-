@@ -26,16 +26,16 @@ class Trakerperson
         return true;
     }
 
-    public function addDataPerson(): string
+    public function addDataPerson($data): string
     {
-        $tk103 = new Tk103;
-        $this->data = $tk103->getdata();
         $db = $this->connectDB();
-        $insert = $this->insertDB($db, "data", $this->data);
+        $insert = $this->insertDB($db, "data", $data);
         if ($insert) {
             return "data added";
         }
         return "Error";
+
+        
     }
     public function deleting(): string
     {
