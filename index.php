@@ -79,7 +79,7 @@ while (true) {
                     "datetime" => $gps_time,
                     "x" => $latitude,
                     "y" => $longitude,
-                    "speed_in_knots" => $tk103_data[11],
+                    "speed_in_knots" => $speed_in_knots,
                     "speed_in_mph" => $speed_in_mph,
                     "bearing" => $bearing,
                     "created_at" => date("Y-m-d H:i:s"),
